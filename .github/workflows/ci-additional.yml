@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        environment: ["mindeps-array-dataframe", "mindeps-bag-delayed"]
+        environment: ["mindeps-array-dataframe", "mindeps-no-optional"]
 
     steps:
       - name: Checkout source
