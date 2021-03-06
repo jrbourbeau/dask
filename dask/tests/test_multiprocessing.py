@@ -43,21 +43,6 @@ def test_pickle_locals():
     assert b"unrelated_function_local" not in b
 
 
-def test_pickle_kwargs():
-    """Test that out-of-band pickling works
-
-    Note cloudpickle does not support this argument:
-
-    https://github.com/cloudpipe/cloudpickle/issues/213
-    """
-    b = _dumps(my_small_function_global, fix_imports=True)
-    assert b"my_small_function_global" in b
-    assert b"unrelated_function_global" not in b
-    assert b"numpy" not in b
-    my_small_function_global_2 = _loads(b, fix_imports=True)
-    assert my_small_function_global_2(2, 3) == 5
-
-
 @pytest.mark.skipif(pickle.HIGHEST_PROTOCOL < 5, reason="requires pickle protocol 5")
 def test_out_of_band_pickling():
     """Test that out-of-band pickling works"""
@@ -99,33 +84,19 @@ def test_remote_exception():
     assert "traceback-body" in str(a)
 
 
-def test_lambda_with_cloudpickle():
+def test_lambda():
     dsk = {"x": 2, "y": (lambda x: x + 1, "x")}
     assert get(dsk, "y") == 3
-
-
-def test_lambda_without_cloudpickle():
-    dsk = {"x": 2, "y": (lambda x: x + 1, "x")}
-    with pytest.raises(ModuleNotFoundError) as e:
-        get(dsk, "y")
-    assert "cloudpickle" in str(e.value)
 
 
 def lambda_result():
     return lambda x: x + 1
 
 
-def test_lambda_results_with_cloudpickle():
+def test_lambda_results():
     dsk = {"x": (lambda_result,)}
     f = get(dsk, "x")
     assert f(2) == 3
-
-
-def test_lambda_results_without_cloudpickle():
-    dsk = {"x": (lambda_result,)}
-    with pytest.raises(ModuleNotFoundError) as e:
-        get(dsk, "x")
-    assert "cloudpickle" in str(e.value)
 
 
 class NotUnpickleable:

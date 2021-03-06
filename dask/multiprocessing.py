@@ -16,6 +16,10 @@ from .optimization import fuse, cull
 from .utils import ensure_dict
 
 
+_loads = cloudpickle.loads
+_dumps = partial(cloudpickle.dumps, protocol=pickle.HIGHEST_PROTOCOL)
+
+
 def _reduce_method_descriptor(m):
     return getattr, (m.__objclass__, m.__name__)
 
@@ -195,12 +199,8 @@ def get(
 
     # We specify marshalling functions in order to catch serialization
     # errors and report them to the user.
-    loads = func_loads or config.get("func_loads", None) or cloudpickle.loads
-    dumps = (
-        func_dumps
-        or config.get("func_dumps", None)
-        or partial(cloudpickle.dumps, protocol=pickle.HIGHEST_PROTOCOL)
-    )
+    loads = func_loads or config.get("func_loads", None) or _loads
+    dumps = func_dumps or config.get("func_dumps", None) or _dumps
 
     # Note former versions used a multiprocessing Manager to share
     # a Queue between parent and workers, but this is fragile on Windows
