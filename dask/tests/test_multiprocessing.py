@@ -1,4 +1,3 @@
-from distutils.version import LooseVersion
 import sys
 import multiprocessing
 from operator import add
@@ -9,19 +8,6 @@ import dask
 from dask import compute, delayed
 from dask.multiprocessing import get, _dumps, _loads, get_context, remote_exception
 from dask.utils_test import inc
-
-
-try:
-    import cloudpickle  # noqa: F401
-
-    has_cloudpickle = True
-except ImportError:
-    has_cloudpickle = False
-
-requires_cloudpickle = pytest.mark.skipif(
-    not has_cloudpickle, reason="requires cloudpickle"
-)
-not_cloudpickle = pytest.mark.skipif(has_cloudpickle, reason="cloudpickle is installed")
 
 
 def unrelated_function_global(a):
@@ -41,7 +27,6 @@ def test_pickle_globals():
     assert b"numpy" not in b
 
 
-@requires_cloudpickle
 def test_pickle_locals():
     """Unrelated locals should not be included in serialized bytes"""
     np = pytest.importorskip("numpy")
@@ -58,7 +43,6 @@ def test_pickle_locals():
     assert b"unrelated_function_local" not in b
 
 
-@not_cloudpickle
 def test_pickle_kwargs():
     """Test that out-of-band pickling works
 
@@ -78,9 +62,6 @@ def test_pickle_kwargs():
 def test_out_of_band_pickling():
     """Test that out-of-band pickling works"""
     np = pytest.importorskip("numpy")
-    if has_cloudpickle:
-        if cloudpickle.__version__ < LooseVersion("1.3.0"):
-            pytest.skip("when using cloudpickle, it must be version 1.3.0+")
 
     a = np.arange(5)
 
@@ -118,13 +99,11 @@ def test_remote_exception():
     assert "traceback-body" in str(a)
 
 
-@requires_cloudpickle
 def test_lambda_with_cloudpickle():
     dsk = {"x": 2, "y": (lambda x: x + 1, "x")}
     assert get(dsk, "y") == 3
 
 
-@not_cloudpickle
 def test_lambda_without_cloudpickle():
     dsk = {"x": 2, "y": (lambda x: x + 1, "x")}
     with pytest.raises(ModuleNotFoundError) as e:
@@ -136,14 +115,12 @@ def lambda_result():
     return lambda x: x + 1
 
 
-@requires_cloudpickle
 def test_lambda_results_with_cloudpickle():
     dsk = {"x": (lambda_result,)}
     f = get(dsk, "x")
     assert f(2) == 3
 
 
-@not_cloudpickle
 def test_lambda_results_without_cloudpickle():
     dsk = {"x": (lambda_result,)}
     with pytest.raises(ModuleNotFoundError) as e:
@@ -200,7 +177,6 @@ def test_optimize_graph_false():
     assert len(keys) == 2
 
 
-@requires_cloudpickle
 def test_works_with_highlevel_graph():
     """Previously `dask.multiprocessing.get` would accidentally forward
     `HighLevelGraph` graphs through the dask optimization/scheduling routines,
@@ -223,7 +199,6 @@ def test_works_with_highlevel_graph():
     assert res.x == 1
 
 
-@requires_cloudpickle
 @pytest.mark.parametrize("random", ["numpy", "random"])
 def test_random_seeds(random):
     if random == "numpy":
@@ -260,7 +235,6 @@ def test_custom_context_used_python3_posix():
 
     We assume default is 'spawn', and therefore test for 'fork'.
     """
-    pytest.importorskip("cloudpickle")
     # We check for 'fork' by ensuring subprocess doesn't have modules only
     # parent process should have:
 

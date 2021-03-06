@@ -1647,8 +1647,8 @@ def test_combine_first():
 
 def test_dataframe_picklable():
     from pickle import loads, dumps
+    import cloudpickle
 
-    cloudpickle = pytest.importorskip("cloudpickle")
     cp_dumps = cloudpickle.dumps
     cp_loads = cloudpickle.loads
 
