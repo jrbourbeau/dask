@@ -88,15 +88,11 @@ These optional dependencies and their minimum supported versions are listed belo
 +===============+==========+==============================================================+
 |     bokeh     | >=1.0.0  |                Visualizing dask diagnostics                  |
 +---------------+----------+--------------------------------------------------------------+
-|  cloudpickle  | >=0.2.2  |              Pickling support for Python objects             |
-+---------------+----------+--------------------------------------------------------------+
 |   cityhash    |          |                  Faster hashing of arrays                    |
 +---------------+----------+--------------------------------------------------------------+
 |  distributed  | >=2.0    |               Distributed computing in Python                |
 +---------------+----------+--------------------------------------------------------------+
 |  fastparquet  |          |         Storing and reading data from parquet files          |
-+---------------+----------+--------------------------------------------------------------+
-|     fsspec    | >=0.6.0  |          Used for local, cluster and remote data IO          |
 +---------------+----------+--------------------------------------------------------------+
 |     gcsfs     | >=0.4.0  |        File-system interface to Google Cloud Storage         |
 +---------------+----------+--------------------------------------------------------------+
@@ -105,8 +101,6 @@ These optional dependencies and their minimum supported versions are listed belo
 |     numpy     | >=1.15.1 |                   Required for dask.array                    |
 +---------------+----------+--------------------------------------------------------------+
 |     pandas    | >=0.25.0 |                  Required for dask.dataframe                 |
-+---------------+----------+--------------------------------------------------------------+
-|     partd     | >=0.3.10 |            Concurrent appendable key-value storage           |
 +---------------+----------+--------------------------------------------------------------+
 |     psutil    |          |             Enables a more accurate CPU count                |
 +---------------+----------+--------------------------------------------------------------+
@@ -118,7 +112,7 @@ These optional dependencies and their minimum supported versions are listed belo
 +---------------+----------+--------------------------------------------------------------+
 |   sqlalchemy  |          |            Writing and reading from SQL databases            |
 +---------------+----------+--------------------------------------------------------------+
-| cytoolz/toolz | >=0.8.2  | Utility functions for iterators, functions, and dictionaries |
+|    cytoolz    | >=0.8.2  |               Accelerated version of toolz                   |
 +---------------+----------+--------------------------------------------------------------+
 |    xxhash     |          |                  Faster hashing of arrays                    |
 +---------------+----------+--------------------------------------------------------------+
