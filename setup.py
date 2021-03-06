@@ -21,7 +21,7 @@ extras_require = {
 extras_require["complete"] = sorted({v for req in extras_require.values() for v in req})
 
 install_requires = [
-    "cloudpickle >= 0.2.2",
+    "cloudpickle >= 0.4.0",
     "fsspec >= 0.6.0",
     "partd >= 0.3.10",
     "pyyaml",
