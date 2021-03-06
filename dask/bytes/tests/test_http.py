@@ -6,6 +6,7 @@ import time
 import fsspec
 from distutils.version import LooseVersion
 
+import dask.bag as db
 from dask.bytes.core import open_files
 from dask.bytes._compatibility import FSSPEC_042
 from dask.utils import tmpdir
@@ -179,7 +180,6 @@ def test_parquet():
 @pytest.mark.network
 def test_bag():
     # This test pulls from different hosts
-    db = pytest.importorskip("dask.bag")
     urls = [
         "https://raw.githubusercontent.com/weierophinney/pastebin/"
         "master/public/js-src/dojox/data/tests/stores/patterns.csv",

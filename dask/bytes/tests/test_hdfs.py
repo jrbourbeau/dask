@@ -5,6 +5,7 @@ import pytest
 from tlz import concat
 
 import dask
+import dask.bag as db
 from dask.bytes.core import read_bytes, open_files, get_fs_token_paths
 
 
@@ -144,7 +145,6 @@ def test_read_csv(hdfs):
 
 
 def test_read_text(hdfs):
-    db = pytest.importorskip("dask.bag")
     import multiprocessing as mp
 
     pool = mp.get_context("spawn").Pool(2)
@@ -173,8 +173,6 @@ def test_read_text(hdfs):
 
 
 def test_read_text_unicode(hdfs):
-    db = pytest.importorskip("dask.bag")
-
     data = b"abcd\xc3\xa9"
     fn = "%s/data.txt" % basedir
     with hdfs.open(fn, "wb") as f:

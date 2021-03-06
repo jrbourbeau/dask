@@ -12,6 +12,7 @@ from tornado import gen
 import dask
 from dask import persist, delayed, compute
 from dask.array.numpy_compat import _numpy_120
+import dask.bag as db
 from dask.delayed import Delayed
 from dask.utils import tmpdir, get_named_args
 from distributed import futures_of
@@ -112,7 +113,6 @@ def test_fused_blockwise_dataframe_merge(c, fuse):
 
 
 def test_futures_to_delayed_bag(c):
-    db = pytest.importorskip("dask.bag")
     L = [1, 2, 3]
 
     futures = c.scatter([L, L])
