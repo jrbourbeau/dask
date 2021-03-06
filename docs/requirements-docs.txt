@@ -6,7 +6,6 @@ toolz
 cloudpickle
 pandas>=0.25.0
 distributed>=2.14.0
-fsspec
 scipy
 pytest
 pytest-check-links

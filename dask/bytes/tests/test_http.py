@@ -190,10 +190,6 @@ def test_bag():
     b.compute()
 
 
-@pytest.mark.xfail(
-    LooseVersion(fsspec.__version__) <= "0.4.1",
-    reason="https://github.com/dask/dask/pull/5231",
-)
 @pytest.mark.network
 def test_read_csv():
     dd = pytest.importorskip("dask.dataframe")
