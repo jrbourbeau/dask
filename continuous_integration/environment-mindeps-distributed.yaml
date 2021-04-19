@@ -13,7 +13,7 @@ dependencies:
   # TODO: Use distributed-2021.04.1 when it becomes available
   - pip
   - pip:
-    - git+https://github.com/dask/distributed.git
+    - git+https://github.com/dask/distributed
   # test dependencies
   - pytest
   - pytest-rerunfailures
