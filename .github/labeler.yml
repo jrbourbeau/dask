@@ -13,3 +13,7 @@ io:
 documentation:
   - dask/docs/*
   - dask/docs/**/*
+
+dispatch:
+  - dask/**/backends.py
+  - dask/**/dispatch.py
