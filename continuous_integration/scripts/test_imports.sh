@@ -11,7 +11,7 @@ test_import () {
         python -m pip install git+https://github.com/dask/distributed
     fi
     conda activate test-imports
-    python -m pip install -e --no-deps .
+    python -m pip install -e .
     echo "python -c '$2'"
     python -c "$2"
     conda deactivate
