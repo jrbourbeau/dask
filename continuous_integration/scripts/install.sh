@@ -7,10 +7,8 @@ set -xe
 # python -m pip install --no-deps cityhash
 
 if [[ ${UPSTREAM_DEV} ]]; then
-    mamba install -y -c arrow-nightlies "pyarrow>3.0"
+    conda install -y -c arrow-nightlies "pyarrow>3.0"
 
-    # FIXME https://github.com/mamba-org/mamba/issues/412
-    # mamba uninstall --force numpy pandas
     conda uninstall --force numpy pandas
 
     python -m pip install --no-deps --pre \
@@ -32,11 +30,11 @@ fi
 
 # Install dask
 python -m pip install --quiet --no-deps -e .[complete]
-echo mamba list
-mamba list
+echo conda list
+conda list
 
 # For debugging
 echo -e "--\n--Conda Environment (re-create this with \`conda env create --name <name> -f <output_file>\`)\n--"
-mamba env export | grep -E -v '^prefix:.*$'
+conda env export | grep -E -v '^prefix:.*$'
 
 set +xe
