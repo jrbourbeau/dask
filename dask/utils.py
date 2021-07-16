@@ -198,8 +198,8 @@ def tmpdir(dir=None):
 
 @contextmanager
 def filetext(text, extension="", open=open, mode="w"):
-    with tmpfile(extension=extension) as filename:
-        f = open(filename, mode=mode)
+    with tempfile.NamedTemporaryFile(suffix="." + extension.lstrip(".")) as tmpfile:
+        f = open(tmpfile.name, mode=mode)
         try:
             f.write(text)
         finally:
@@ -208,7 +208,7 @@ def filetext(text, extension="", open=open, mode="w"):
             except AttributeError:
                 pass
 
-        yield filename
+        yield tmpfile.name
 
 
 @contextmanager
@@ -223,7 +223,7 @@ def changed_cwd(new_cwd):
 
 @contextmanager
 def tmp_cwd(dir=None):
-    with tmpdir(dir) as dirname:
+    with tempfile.TemporaryDirectory(dir=dir) as dirname:
         with changed_cwd(dirname):
             yield dirname
 
