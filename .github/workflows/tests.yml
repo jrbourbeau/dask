@@ -61,7 +61,7 @@ jobs:
       - name: Upload conda environment
         uses: actions/upload-artifact@v2
         with:
-          name: conda-environment-export
+          name: conda export ${{ matrix.python-version }}-${{ matrix.os }}
           path: environment-export.yml
 
       - name: Run tests
