@@ -67,7 +67,7 @@ jobs:
     needs: build
     if: |
       always()
-      && github.repository == 'dask/dask'
+      && github.repository == 'jrbourbeau/dask'
       && needs.check.outputs.test-upstream == 'true'
       && needs.build.result == 'failure'
     runs-on: ubuntu-latest
