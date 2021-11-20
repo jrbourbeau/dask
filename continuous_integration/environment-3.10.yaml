@@ -1,0 +1,69 @@
+# This job includes coverage
+name: test-environment
+channels:
+  - conda-forge
+dependencies:
+  # required dependencies
+  - python=3.10
+  - packaging
+  - numpy
+  - pandas
+  # test dependencies
+  - pre-commit
+  - pytest
+  - pytest-cov
+  - pytest-rerunfailures
+  - pytest-xdist
+  # - moto
+  - flask
+  # - fastparquet
+  - h5py
+  # - pytables
+  - zarr
+  # - tiledb-py
+  - xarray
+  - fsspec
+  # sqlalchemy 1.4.0 causes deprecation warnings to be raised from pandas
+  # along with other issues https://github.com/pandas-dev/pandas/issues/40467
+  # - sqlalchemy<1.4.0
+  - pyarrow
+  - coverage
+  - jsonschema
+  # other -- IO
+  # Not available for Python 3.9 on conda-forge
+  # - bcolz
+  - blosc
+  - boto3
+  - botocore
+  - bokeh
+  - httpretty
+  - aiohttp
+  # Need recent version of s3fs to support newer aiobotocore versions
+  # https://github.com/dask/s3fs/issues/514
+  - s3fs>=2021.8.0
+  - cloudpickle
+  - crick
+  - cytoolz
+  - distributed
+  - graphviz
+  - ipython
+  - lz4
+  # - numba
+  - partd
+  - psutil
+  - requests
+  # - scikit-image
+  - scikit-learn
+  - scipy
+  - toolz
+  - python-snappy
+  - sparse
+  - cachey
+  - python-graphviz
+  - pandas-datareader
+  - python-xxhash
+  - mmh3
+  - jinja2
+  - pip
+  - pip:
+    - git+https://github.com/dask/distributed
