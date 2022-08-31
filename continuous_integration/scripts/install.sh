@@ -9,7 +9,7 @@ set -xe
 if [[ ${UPSTREAM_DEV} ]]; then
     # FIXME workaround for https://github.com/mamba-org/mamba/issues/1682
     arr=($(mamba search --override-channels -c arrow-nightlies pyarrow | grep cpu | tail -n 1))
-    export PYARROW_VERSION=${arr[1]}
+    export PYARROW_VERSION=${arr[1]}=${arr[2]}
     mamba install -y -c arrow-nightlies "pyarrow=$PYARROW_VERSION"
 
     # FIXME https://github.com/mamba-org/mamba/issues/412
