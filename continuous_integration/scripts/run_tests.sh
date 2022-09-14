@@ -11,6 +11,6 @@ if [[ $COVERAGE == 'true' ]]; then
 fi
 
 echo "py.test dask --runslow $XTRATESTARGS"
-py.test dask --runslow $XTRATESTARGS
+py.test dask/tests/test_compatibility.py::test_entry_points -s --runslow $XTRATESTARGS
 
 set +e

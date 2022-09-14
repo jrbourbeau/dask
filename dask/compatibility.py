@@ -18,6 +18,8 @@ def entry_points(group=None):
     if _PY_VERSION >= parse_version("3.10"):
         return importlib.metadata.entry_points(group=group)
     else:
+        print(f"{importlib = }")
+        print(f"{importlib.metadata = }")
         eps = importlib.metadata.entry_points()
         if group:
             return eps.get(group, [])
