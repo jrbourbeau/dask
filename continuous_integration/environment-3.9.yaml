@@ -22,7 +22,8 @@ dependencies:
   - h5py
   - pytables
   - zarr
-  - tiledb-py
+  # - tiledb-py
+  - tiledb-py=0.17.4
   - pyspark
   - tiledb>=2.5.0
   - xarray
