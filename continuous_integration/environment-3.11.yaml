@@ -18,14 +18,14 @@ dependencies:
   - pytest-xdist
   - moto
   - flask
-  - fastparquet>=0.8.0
+  # - fastparquet>=0.8.0
   - h5py
   - pytables
   - zarr
   # `tiledb-py=0.17.5` lead to strange seg faults in CI.
   # We should unpin when possible.
   # https://github.com/dask/dask/pull/9569
-  - tiledb-py<0.17.4
+  # - tiledb-py<0.17.4
   - pyspark
   - tiledb>=2.5.0
   - xarray
