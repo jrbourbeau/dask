@@ -10,7 +10,7 @@ dd = pytest.importorskip("dask.dataframe")
 np = pytest.importorskip("numpy")
 pd = pytest.importorskip("pandas")
 pyspark = pytest.importorskip("pyspark")
-pytest.importorskip("pyarrow")
+pa = pytest.importorskip("pyarrow")
 pytest.importorskip("fastparquet")
 
 from dask.dataframe.utils import assert_eq
@@ -166,11 +166,16 @@ def test_read_decimal_dtype(spark_session, tmpdir):
 
     sdf = spark_session.createDataFrame(pdf)
     sdf.printSchema()
-    sdf = sdf.withColumn("b", sdf["b"].cast(pyspark.sql.types.DecimalType()))
+    sdf = sdf.withColumn("b", sdf["b"].cast(pyspark.sql.types.DecimalType(10, 0)))
     sdf.printSchema()
     # We are not overwriting any data, but spark complains if the directory
     # already exists (as tmpdir does) and we don't set overwrite
     sdf.repartition(npartitions).write.parquet(tmpdir, mode="overwrite")
 
-    ddf = dd.read_parquet(tmpdir, engine="pyarrow")
-    assert_eq(ddf, pdf, check_index=False)
+    types_mapper = {pa.decimal128(10, 0): pd.ArrowDtype(pa.decimal128(10, 0))}
+    ddf = dd.read_parquet(
+        tmpdir, engine="pyarrow", arrow_to_pandas={"types_mapper": types_mapper.get}
+    )
+    assert ddf.b.dtype == "decimal128(10, 0)[pyarrow]"
+    assert ddf.b.compute().dtype == "decimal128(10, 0)[pyarrow]"
+    assert_eq(ddf, sdf.toPandas(), check_index=False)
