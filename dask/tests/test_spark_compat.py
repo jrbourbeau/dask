@@ -13,9 +13,6 @@ pyspark = pytest.importorskip("pyspark")
 pytest.importorskip("pyarrow")
 pytest.importorskip("fastparquet")
 
-import numpy as np
-import pandas as pd
-
 from dask.dataframe.utils import assert_eq
 
 pytestmark = pytest.mark.skipif(
@@ -67,53 +64,6 @@ def test_roundtrip_parquet_spark_to_dask(spark_session, npartitions, tmpdir, eng
     ddf = ddf.assign(timestamp=ddf.timestamp.dt.tz_localize("UTC"))
     assert ddf.npartitions == npartitions
 
-    assert_eq(ddf, pdf, check_index=False)
-
-
-# @pytest.mark.parametrize("npartitions", (1, 5, 10))
-# @pytest.mark.parametrize("engine", ("pyarrow", "fastparquet"))
-@pytest.mark.parametrize("npartitions", (5,))
-@pytest.mark.parametrize("engine", ("pyarrow",))
-def test_roundtrip_parquet_spark_to_dask_extension_dtypes(
-    spark_session, npartitions, tmpdir, engine
-):
-    # tmpdir = str(tmpdir)
-    tmpdir = "test.parquet"
-
-    size = 20
-    pdf = pd.DataFrame(
-        {
-            "a": range(size),
-            "b": np.random.random(size=size),
-            "c": [True, False] * (size // 2),
-            "d": ["alice", "bob"] * (size // 2),
-            "e": np.random.random(size=size),
-        }
-    )
-    pdf = pdf.astype(
-        {
-            "a": "Int64",
-            "b": "Float64",
-            "c": "boolean",
-            "d": "string[pyarrow]",
-        }
-    )
-    # pdf.loc[4, "b"] = pd.NA
-    # # Ensure all columns are extension dtypes
-    # assert all(
-    #     [pd.api.types.is_extension_array_dtype(dtype) for dtype in pdf.dtypes]
-    # ), pdf.dtypes
-
-    sdf = spark_session.createDataFrame(pdf)
-    # We are not overwriting any data, but spark complains if the directory
-    # already exists (as tmpdir does) and we don't set overwrite
-    sdf.repartition(npartitions).write.parquet(tmpdir, mode="overwrite")
-
-    ddf = dd.read_parquet(tmpdir, engine=engine)
-    assert ddf.npartitions == npartitions
-    # assert all(
-    #     [pd.api.types.is_extension_array_dtype(dtype) for dtype in ddf.dtypes]
-    # ), ddf.dtypes
     assert_eq(ddf, pdf, check_index=False)
 
 
@@ -197,4 +147,30 @@ def test_roundtrip_parquet_spark_to_dask_extension_dtypes(spark_session, tmpdir)
     assert all(
         [pd.api.types.is_extension_array_dtype(dtype) for dtype in ddf.dtypes]
     ), ddf.dtypes
+    assert_eq(ddf, pdf, check_index=False)
+
+
+def test_read_decimal_dtype(spark_session, tmpdir):
+    tmpdir = str(tmpdir)
+    npartitions = 5
+
+    size = 20
+    pdf = pd.DataFrame(
+        {
+            "a": range(size),
+            "b": np.random.random(size=size),
+            "c": [True, False] * (size // 2),
+            "d": ["alice", "bob"] * (size // 2),
+        }
+    )
+
+    sdf = spark_session.createDataFrame(pdf)
+    sdf.printSchema()
+    sdf = sdf.withColumn("b", sdf["b"].cast(pyspark.sql.types.DecimalType()))
+    sdf.printSchema()
+    # We are not overwriting any data, but spark complains if the directory
+    # already exists (as tmpdir does) and we don't set overwrite
+    sdf.repartition(npartitions).write.parquet(tmpdir, mode="overwrite")
+
+    ddf = dd.read_parquet(tmpdir, engine="pyarrow")
     assert_eq(ddf, pdf, check_index=False)
