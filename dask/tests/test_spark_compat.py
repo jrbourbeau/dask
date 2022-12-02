@@ -151,7 +151,7 @@ def test_roundtrip_parquet_spark_to_dask_extension_dtypes(spark_session, tmpdir)
 
 
 def test_read_decimal_dtype(spark_session, tmpdir):
-    tmpdir = str(tmpdir)
+    tmpdir = "test.parquet"
     npartitions = 5
 
     size = 20
