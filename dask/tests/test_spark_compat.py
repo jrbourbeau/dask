@@ -174,21 +174,10 @@ def test_read_decimal_dtype(spark_session, tmpdir):
             "e": decimal_data,
         }
     )
-    pa_decimal_type = pa.decimal128(7, 3)
-    pdf = pdf.astype(
-        {
-            "a": "int64[pyarrow]",
-            "b": "float64[pyarrow]",
-            "c": "boolean[pyarrow]",
-            # "d": "string[pyarrow]",
-            "e": pd.ArrowDtype(pa_decimal_type),
-        }
-    )
-
     sdf = spark_session.createDataFrame(pdf)
     sdf.printSchema()
-    # sdf = sdf.withColumn("b", sdf["b"].cast(pyspark.sql.types.DecimalType(10, 0)))
-    # sdf.printSchema()
+    sdf = sdf.withColumn("b", sdf["b"].cast(pyspark.sql.types.DecimalType(7, 3)))
+    sdf.printSchema()
     # We are not overwriting any data, but spark complains if the directory
     # already exists (as tmpdir does) and we don't set overwrite
     sdf.repartition(npartitions).write.parquet(tmpdir, mode="overwrite")
@@ -203,4 +192,15 @@ def test_read_decimal_dtype(spark_session, tmpdir):
     ), ddf.e.compute().dtype.pyarrow_dtype
     # assert ddf.e.dtype == "decimal128(7, 3)[pyarrow]", ddf.e.dtype
     # assert ddf.e.compute().dtype == "decimal128(7, 3)[pyarrow]", ddf.e.compute().dtype
-    assert_eq(ddf, pdf, check_index=False)
+    # pa_decimal_type = pa.decimal128(7, 3)
+    expected = pdf.astype(
+        {
+            "a": "int64[pyarrow]",
+            "b": "float64[pyarrow]",
+            "c": "boolean[pyarrow]",
+            # "d": "string[pyarrow]",
+            "e": pd.ArrowDtype(pa.decimal128(7, 3)),
+        }
+    )
+
+    assert_eq(ddf, expected, check_index=False)
