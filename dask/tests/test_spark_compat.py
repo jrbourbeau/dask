@@ -195,10 +195,12 @@ def test_read_decimal_dtype(spark_session, tmpdir):
 
     # types_mapper = {pa_decimal_type: pd.ArrowDtype(pa_decimal_type)}
     ddf = dd.read_parquet(tmpdir, engine="pyarrow", use_nullable_dtypes="pyarrow")
-    assert isinstance(ddf.e.dtype.type, pa.Decimal128Type), ddf.e.dtype.type
     assert isinstance(
-        ddf.e.compute().dtype.type, pa.Decimal128Type
-    ), ddf.e.compute().dtype.type
+        ddf.e.dtype.pyarrow_dtype, pa.Decimal128Type
+    ), ddf.e.dtype.pyarrow_dtype
+    assert isinstance(
+        ddf.e.compute().dtype.pyarrow_dtype, pa.Decimal128Type
+    ), ddf.e.compute().dtype.pyarrow_dtype
     # assert ddf.e.dtype == "decimal128(7, 3)[pyarrow]", ddf.e.dtype
     # assert ddf.e.compute().dtype == "decimal128(7, 3)[pyarrow]", ddf.e.compute().dtype
     assert_eq(ddf, pdf, check_index=False)
