@@ -174,11 +174,12 @@ def test_read_decimal_dtype(spark_session, tmpdir):
             "e": decimal_data,
         }
     )
+    pa_decimal_type = pa.decimal128(7, 3)
     pdf = pdf.astype(
         {
             "a": "int64[pyarrow]",
             "b": "float64[pyarrow]",
-            "e": pd.ArrowDtype(pa.decimal128(7, 3)),
+            "e": pd.ArrowDtype(pa_decimal_type),
             "c": "boolean[pyarrow]",
             "d": "string[pyarrow]",
         }
@@ -192,7 +193,7 @@ def test_read_decimal_dtype(spark_session, tmpdir):
     # already exists (as tmpdir does) and we don't set overwrite
     sdf.repartition(npartitions).write.parquet(tmpdir, mode="overwrite")
 
-    types_mapper = {pa.decimal128(10, 0): pd.ArrowDtype(pa.decimal128(7, 3))}
+    types_mapper = {pa_decimal_type: pd.ArrowDtype(pa_decimal_type)}
     ddf = dd.read_parquet(
         tmpdir, engine="pyarrow", arrow_to_pandas={"types_mapper": types_mapper.get}
     )
