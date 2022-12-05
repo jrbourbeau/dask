@@ -179,9 +179,9 @@ def test_read_decimal_dtype(spark_session, tmpdir):
         {
             "a": "int64[pyarrow]",
             "b": "float64[pyarrow]",
-            "e": pd.ArrowDtype(pa_decimal_type),
             "c": "boolean[pyarrow]",
             "d": "string[pyarrow]",
+            "e": pd.ArrowDtype(pa_decimal_type),
         }
     )
 
@@ -197,6 +197,6 @@ def test_read_decimal_dtype(spark_session, tmpdir):
     ddf = dd.read_parquet(
         tmpdir, engine="pyarrow", arrow_to_pandas={"types_mapper": types_mapper.get}
     )
-    assert ddf.b.dtype == "decimal128(10, 0)[pyarrow]"
-    assert ddf.b.compute().dtype == "decimal128(10, 0)[pyarrow]"
+    assert ddf.e.dtype == "decimal128(7, 3)[pyarrow]", ddf.e.dtype
+    assert ddf.e.compute().dtype == "decimal128(7, 3)[pyarrow]", ddf.e.compute().dtype
     assert_eq(ddf, sdf.toPandas(), check_index=False)
