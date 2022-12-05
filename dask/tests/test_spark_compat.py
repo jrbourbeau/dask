@@ -170,7 +170,7 @@ def test_read_decimal_dtype(spark_session, tmpdir):
             "a": range(size),
             "b": np.random.random(size=size),
             "c": [True, False] * (size // 2),
-            "d": ["alice", "bob"] * (size // 2),
+            # "d": ["alice", "bob"] * (size // 2),
             "e": decimal_data,
         }
     )
@@ -180,7 +180,7 @@ def test_read_decimal_dtype(spark_session, tmpdir):
             "a": "int64[pyarrow]",
             "b": "float64[pyarrow]",
             "c": "boolean[pyarrow]",
-            "d": "string[pyarrow]",
+            # "d": "string[pyarrow]",
             "e": pd.ArrowDtype(pa_decimal_type),
         }
     )
