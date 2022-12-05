@@ -1,3 +1,4 @@
+import decimal
 import signal
 import sys
 import threading
@@ -152,27 +153,46 @@ def test_roundtrip_parquet_spark_to_dask_extension_dtypes(spark_session, tmpdir)
 
 def test_read_decimal_dtype(spark_session, tmpdir):
     tmpdir = "test.parquet"
-    npartitions = 5
+    npartitions = 3
 
-    size = 20
+    size = 6
+
+    decimal_data = [
+        decimal.Decimal("8093.234"),
+        decimal.Decimal("8094.234"),
+        decimal.Decimal("8095.234"),
+        decimal.Decimal("8096.234"),
+        decimal.Decimal("8097.234"),
+        decimal.Decimal("8098.234"),
+    ]
     pdf = pd.DataFrame(
         {
             "a": range(size),
             "b": np.random.random(size=size),
             "c": [True, False] * (size // 2),
             "d": ["alice", "bob"] * (size // 2),
+            "e": decimal_data,
+        }
+    )
+    pdf = pdf.astype(
+        {
+            "a": "int64[pyarrow]",
+            "b": "float64[pyarrow]",
+            "e": pd.ArrowDtype(pa.decimal128(7, 3)),
+            "c": "boolean[pyarrow]",
+            "d": "string[pyarrow]",
         }
     )
 
     sdf = spark_session.createDataFrame(pdf)
     sdf.printSchema()
-    sdf = sdf.withColumn("b", sdf["b"].cast(pyspark.sql.types.DecimalType(10, 0)))
-    sdf.printSchema()
+    # sdf = sdf.withColumn("b", sdf["b"].cast(pyspark.sql.types.DecimalType(10, 0)))
+    # sdf.printSchema()
     # We are not overwriting any data, but spark complains if the directory
     # already exists (as tmpdir does) and we don't set overwrite
     sdf.repartition(npartitions).write.parquet(tmpdir, mode="overwrite")
 
-    types_mapper = {pa.decimal128(10, 0): pd.ArrowDtype(pa.decimal128(10, 0))}
+    types_mapper = {pa.decimal128(10, 0): pd.ArrowDtype(pa.decimal128(7, 3))}
     ddf = dd.read_parquet(
         tmpdir, engine="pyarrow", arrow_to_pandas={"types_mapper": types_mapper.get}
     )
