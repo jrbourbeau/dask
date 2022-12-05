@@ -176,7 +176,7 @@ def test_read_decimal_dtype(spark_session, tmpdir):
     )
     sdf = spark_session.createDataFrame(pdf)
     sdf.printSchema()
-    sdf = sdf.withColumn("b", sdf["b"].cast(pyspark.sql.types.DecimalType(7, 3)))
+    sdf = sdf.withColumn("e", sdf["e"].cast(pyspark.sql.types.DecimalType(7, 3)))
     sdf.printSchema()
     # We are not overwriting any data, but spark complains if the directory
     # already exists (as tmpdir does) and we don't set overwrite
