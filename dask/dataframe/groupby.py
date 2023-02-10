@@ -16,6 +16,7 @@ from dask.dataframe._compat import (
     PANDAS_GT_140,
     PANDAS_GT_150,
     PANDAS_GT_200,
+    PANDAS_VERSION,
     check_numeric_only_deprecation,
 )
 from dask.dataframe.core import (
@@ -304,7 +305,8 @@ def numeric_only_deprecate_default(func):
             # in pandas. We don't support `numeric_only=False` in this case.
             if not PANDAS_GT_150 and numeric_only is not no_default:
                 raise NotImplementedError(
-                    "'numeric_only=False' is not implemented in Dask."
+                    "The `numeric_only=` keyword isn't supported in dask when using "
+                    f"pandas<1.5 (pandas={PANDAS_VERSION} is installed)."
                 )
             numerics = self.obj._meta._get_numeric_data()
             has_non_numerics = set(self._meta.dtypes.columns) - set(numerics.columns)
@@ -313,12 +315,6 @@ def numeric_only_deprecate_default(func):
                     warnings.warn(
                         "The default value of numeric_only will be changed to False in "
                         "the future when using dask with pandas 2.0",
-                        FutureWarning,
-                    )
-                elif numeric_only is False and funcname(func) in ("sum", "prod"):
-                    warnings.warn(
-                        "Dropping invalid columns is deprecated. In a future version, a TypeError will be raised. "
-                        f"Before calling .{funcname(func)}, select only columns which should be valid for the function",
                         FutureWarning,
                     )
 
@@ -344,7 +340,8 @@ def numeric_only_not_implemented(func):
                 # in pandas. We don't support `numeric_only=False` in this case.
                 if not PANDAS_GT_150 and numeric_only is not no_default:
                     raise NotImplementedError(
-                        "'numeric_only=False' is not implemented in Dask."
+                        "The `numeric_only=` keyword isn't supported in dask when using "
+                        f"pandas<1.5 (pandas={PANDAS_VERSION} is installed)."
                     )
                 numerics = self.obj._meta._get_numeric_data()
                 has_non_numerics = set(self._meta.dtypes.columns) - set(
