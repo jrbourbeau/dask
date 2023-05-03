@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from dask.dataframe._compat import PANDAS_GT_150, PANDAS_GT_200
@@ -7,6 +8,42 @@ try:
     import pyarrow as pa
 except ImportError:
     pa = None
+
+
+def is_pyarrow_dtype(dtype):
+    return isinstance(dtype, pd.ArrowDtype) or dtype == pd.StringDtype("pyarrow")
+
+
+def to_pyarrow_dtype(dtype):
+    import pyarrow as pa
+    from pandas.core.arrays.arrow.array import to_pyarrow_type
+    from pandas.core.dtypes.dtypes import BaseMaskedDtype, PandasExtensionDtype
+
+    # Already a pyarrow-backed dtype
+    if is_pyarrow_dtype(dtype):
+        return dtype
+
+    if isinstance(dtype, PandasExtensionDtype):
+        base_dtype = dtype.base
+    elif isinstance(dtype, BaseMaskedDtype):
+        base_dtype = dtype.numpy_dtype
+    elif isinstance(dtype, pd.StringDtype):
+        base_dtype = np.dtype(str)
+    else:
+        base_dtype = dtype
+
+    if base_dtype == object:
+        # Convert objects to strings
+        pa_type = pa.string()
+    else:
+        pa_type = to_pyarrow_type(base_dtype)
+    if pa_type is None:
+        raise TypeError(f"Encountered {dtype} which is not compatible with pyarrow")
+
+    if pa_type == pa.string():
+        return pd.StringDtype("pyarrow")
+    else:
+        return pd.ArrowDtype(pa_type)
 
 
 def is_pyarrow_string_dtype(dtype):
@@ -24,11 +61,12 @@ def is_pyarrow_string_dtype(dtype):
 def is_object_string_dtype(dtype):
     """Determine if input is a non-pyarrow string dtype"""
     # in pandas < 2.0, is_string_dtype(DecimalDtype()) returns True
-    return (
-        pd.api.types.is_string_dtype(dtype)
-        and not is_pyarrow_string_dtype(dtype)
-        and not pd.api.types.is_dtype_equal(dtype, "decimal")
-    )
+    return not is_pyarrow_dtype(dtype)
+    # return (
+    #     pd.api.types.is_string_dtype(dtype)
+    #     and not is_pyarrow_string_dtype(dtype)
+    #     and not pd.api.types.is_dtype_equal(dtype, "decimal")
+    # )
 
 
 def is_object_string_index(x):
@@ -58,12 +96,12 @@ def to_pyarrow_string(df):
     dtypes = None
     if is_dataframe_like(df):
         dtypes = {
-            col: pd.StringDtype("pyarrow")
+            col: to_pyarrow_dtype(dtype)
             for col, dtype in df.dtypes.items()
             if is_object_string_dtype(dtype)
         }
     elif is_object_string_dtype(df.dtype):
-        dtypes = pd.StringDtype("pyarrow")
+        dtypes = to_pyarrow_dtype(df.dtype)
 
     if dtypes:
         df = df.astype(dtypes, copy=False)
@@ -74,7 +112,7 @@ def to_pyarrow_string(df):
     ):
         if isinstance(df.index, pd.MultiIndex):
             levels = {
-                i: level.astype(pd.StringDtype("pyarrow"))
+                i: level.astype(to_pyarrow_dtype(level.dtype))
                 for i, level in enumerate(df.index.levels)
                 if is_object_string_dtype(level.dtype)
             }
@@ -83,7 +121,7 @@ def to_pyarrow_string(df):
                 levels.values(), level=levels.keys(), verify_integrity=False
             )
         else:
-            df.index = df.index.astype(pd.StringDtype("pyarrow"))
+            df.index = df.index.astype(to_pyarrow_dtype(df.index.dtype))
     return df
 
 
