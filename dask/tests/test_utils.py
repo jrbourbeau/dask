@@ -627,6 +627,33 @@ def test_derived_from_dask_dataframe():
     assert "Object with missing values filled" in dd.DataFrame.ffill.__doc__
 
 
+def test_derived_from_raise_on_error():
+    class Foo:
+        pass
+
+    class Bar:
+        @derived_from(Foo)  # Defaults to `raise_on_error=True`
+        def g(self):
+            return "hoowoo"
+
+    class Baz:
+        @derived_from(Foo, raise_on_error=True)
+        def g(self):
+            return "woohoo"
+
+    class Qux:
+        @derived_from(Foo, raise_on_error=False)
+        def g(self):
+            return "woohoo"
+
+    with pytest.raises(NotImplementedError):
+        Bar().g()
+    with pytest.raises(NotImplementedError):
+        Baz().g()
+
+    assert Qux().g() == "woohoo"
+
+
 def test_parse_bytes():
     assert parse_bytes("100") == 100
     assert parse_bytes("100 MB") == 100000000

@@ -5908,6 +5908,7 @@ class DataFrame(_Frame):
         self._meta.applymap(func)
         return elemwise(methods.applymap, self, func, meta=meta)
 
+    @derived_from(pd.DataFrame, raise_on_error=PANDAS_GT_210)
     def map(self, func, meta=no_default):
         if not PANDAS_GT_210:
             raise NotImplementedError(
