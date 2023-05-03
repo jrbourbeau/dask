@@ -818,7 +818,12 @@ def _derived_from(
 
 
 def derived_from(
-    original_klass, version=None, ua_args=None, skipblocks=0, inconsistencies=None
+    original_klass,
+    version=None,
+    ua_args=None,
+    skipblocks=0,
+    inconsistencies=None,
+    raise_on_error=True,
 ):
     """Decorator to attach original class's docstring to the wrapped method.
 
@@ -842,6 +847,10 @@ def derived_from(
     inconsistencies: list
         List of known inconsistencies with method whose docstrings are being
         copied.
+    raise_on_error: bool, optional
+        Whether or not an error should be raised if the wrapped method doesn't
+        exist on ``original_klass``. This is useful for version compatibility
+        handling. Defaults to ``True``.
     """
     ua_args = ua_args or []
 
@@ -859,6 +868,9 @@ def derived_from(
             return method
 
         except AttributeError:
+            if not raise_on_error:
+                return method
+
             module_name = original_klass.__module__.split(".")[0]
 
             @functools.wraps(method)
