@@ -83,6 +83,10 @@ jobs:
           export DASK_DATAFRAME__CONVERT_STRING="True"
           echo "DASK_DATAFRAME__CONVERT_STRING: $DASK_DATAFRAME__CONVERT_STRING"
           echo "DASK_DATAFRAME__CONVERT_STRING=$DASK_DATAFRAME__CONVERT_STRING" >> $GITHUB_ENV
+          
+          export UPSTREAM_DEV="1"
+          echo "UPSTREAM_DEV: $UPSTREAM_DEV"
+          echo "UPSTREAM_DEV=$UPSTREAM_DEV" >> $GITHUB_ENV
 
       - name: Install
         run: source continuous_integration/scripts/install.sh
