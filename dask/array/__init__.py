@@ -48,7 +48,7 @@ try:
     from dask.array.optimization import optimize
     from dask.array.overlap import map_overlap
     from dask.array.percentile import percentile
-    from dask.array.rechunk import rechunk
+    from dask.array.rechunk import old_to_new, rechunk
     from dask.array.reductions import (
         all,
         any,
