@@ -221,10 +221,10 @@ def test_set_index_general(npartitions, shuffle_method):
     not PANDAS_GE_150, reason="Only test `string[pyarrow]` on recent versions of pandas"
 )
 @pytest.mark.parametrize(
-    "string_dtype", ["string[python]", "string[pyarrow]", "object"]
+    "string_dtype", ["string[python]", "string[pyarrow_numpy]", "object"]
 )
 def test_set_index_string(shuffle_method, string_dtype):
-    if string_dtype == "string[pyarrow]":
+    if string_dtype == "string[pyarrow_numpy]":
         pytest.importorskip("pyarrow")
     names = ["alice", "bob", "ricky"]
     df = pd.DataFrame(
@@ -1645,7 +1645,7 @@ def test_calculate_divisions(pdf, expected):
 @pytest.mark.parametrize(
     "data, dtype",
     [
-        (["a", "b"], "string[pyarrow]"),
+        (["a", "b"], "string[pyarrow_numpy]"),
         ([b"a", b"b"], "binary[pyarrow]"),
         # Should probably fix upstream, https://github.com/pandas-dev/pandas/issues/52590
         # (["a", "b"], pa.large_string()),

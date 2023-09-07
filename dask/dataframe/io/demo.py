@@ -243,7 +243,7 @@ make: dict[type | str, Callable] = {
     str: make_string,
     object: make_string,
     "string[python]": make_string,
-    "string[pyarrow]": make_string,
+    "string[pyarrow_numpy]": make_string,
     "category": make_categorical,
     "int8": make_int,
     "int16": make_int,

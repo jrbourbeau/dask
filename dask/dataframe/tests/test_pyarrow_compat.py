@@ -86,7 +86,7 @@ def dtype(request):
     if PANDAS_GE_150:
         return pd.ArrowDtype(pyarrow_dtype=request.param)
     else:
-        return pd.StringDtype("pyarrow")
+        return pd.StringDtype("pyarrow_numpy")
 
 
 def test_pickle_roundtrip(data):
@@ -119,7 +119,7 @@ def test_pickle_roundtrip_pyarrow_string_implementations(string_dtype):
     # There are two pyarrow string implementations in pandas.
     # This tests that both implementations have similar serialization performance.
     if string_dtype == "stringdtype":
-        string_dtype = pd.StringDtype("pyarrow")
+        string_dtype = pd.StringDtype("pyarrow_numpy")
     else:
         string_dtype = pd.ArrowDtype(pa.string())
     expected = pd.Series(map(str, range(1_000)), dtype=string_dtype)

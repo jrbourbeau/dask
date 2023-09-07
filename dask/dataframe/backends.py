@@ -233,9 +233,9 @@ def get_pandas_dataframe_from_pyarrow(meta, table, **kwargs):
         # `string[python]` if we have *any* `string[pyarrow]`
         if (
             pyarrow_dtype in {pa.large_string(), pa.string()}
-            and pd.StringDtype("pyarrow") in meta.dtypes.values
+            and pd.StringDtype("pyarrow_numpy") in meta.dtypes.values
         ):
-            return pd.StringDtype("pyarrow")
+            return pd.StringDtype("pyarrow_numpy")
         return None
 
     types_mapper = kwargs.pop("types_mapper", default_types_mapper)

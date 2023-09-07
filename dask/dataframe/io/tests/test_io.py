@@ -309,10 +309,10 @@ def test_from_pandas_convert_string_config():
         ds = dd.from_pandas(s, npartitions=2)
         ddf = dd.from_pandas(df, npartitions=2)
 
-    s_pyarrow = s.astype("string[pyarrow]")
-    s_pyarrow.index = s_pyarrow.index.astype("string[pyarrow]")
-    df_pyarrow = df.astype({"z": "string[pyarrow]"})
-    df_pyarrow.index = df_pyarrow.index.astype("string[pyarrow]")
+    s_pyarrow = s.astype("string[pyarrow_numpy]")
+    s_pyarrow.index = s_pyarrow.index.astype("string[pyarrow_numpy]")
+    df_pyarrow = df.astype({"z": "string[pyarrow_numpy]"})
+    df_pyarrow.index = df_pyarrow.index.astype("string[pyarrow_numpy]")
     assert_eq(s_pyarrow, ds)
     assert_eq(df_pyarrow, ddf)
 

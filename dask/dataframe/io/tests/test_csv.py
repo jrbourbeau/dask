@@ -388,7 +388,7 @@ def test_read_csv_convert_string_config():
         df = pd.read_csv(fn)
         with dask.config.set({"dataframe.convert-string": True}):
             ddf = dd.read_csv(fn)
-        df_pyarrow = df.astype({"name": "string[pyarrow]"})
+        df_pyarrow = df.astype({"name": "string[pyarrow_numpy]"})
         assert_eq(df_pyarrow, ddf, check_index=False)
 
 

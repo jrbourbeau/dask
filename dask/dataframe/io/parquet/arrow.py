@@ -1800,7 +1800,7 @@ class ArrowDatasetEngine(Engine):
             # Special case pyarrow strings to use more feature complete dtype
             # See https://github.com/pandas-dev/pandas/issues/50074
             if pyarrow_dtype == pa.string():
-                return pd.StringDtype("pyarrow")
+                return pd.StringDtype("pyarrow_numpy")
             else:
                 return pd.ArrowDtype(pyarrow_dtype)
 
@@ -1810,7 +1810,7 @@ class ArrowDatasetEngine(Engine):
 
         # next in priority is converting strings
         if convert_string:
-            type_mappers.append({pa.string(): pd.StringDtype("pyarrow")}.get)
+            type_mappers.append({pa.string(): pd.StringDtype("pyarrow_numpy")}.get)
 
         # and then nullable types
         if dtype_backend == "numpy_nullable":
@@ -1856,9 +1856,9 @@ class ArrowDatasetEngine(Engine):
             and not isinstance(res.index, pd.MultiIndex)
             and pd.api.types.is_string_dtype(res.index.dtype)
             and res.index.dtype
-            not in (pd.StringDtype("pyarrow"), pd.ArrowDtype(pa.string()))
+            not in (pd.StringDtype("pyarrow_numpy"), pd.ArrowDtype(pa.string()))
         ):
-            res.index = res.index.astype(pd.StringDtype("pyarrow"))
+            res.index = res.index.astype(pd.StringDtype("pyarrow_numpy"))
         return res
 
     @classmethod

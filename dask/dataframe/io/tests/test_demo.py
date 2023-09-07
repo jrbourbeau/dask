@@ -240,16 +240,16 @@ def test_with_spec_pyarrow():
         npartitions=1,
         nrecords=10,
         column_specs=[
-            ColumnSpec(dtype="string[pyarrow]", length=10, random=True),
+            ColumnSpec(dtype="string[pyarrow_numpy]", length=10, random=True),
         ],
     )
     ddf = with_spec(spec, seed=42)
     assert isinstance(ddf, dd.DataFrame)
-    assert ddf.columns.tolist() == ["string_pyarrow1"]
-    assert ddf["string_pyarrow1"].dtype == "string[pyarrow]"
+    assert ddf.columns.tolist() == ["string_pyarrow_numpy1"]
+    assert ddf["string_pyarrow_numpy1"].dtype == "string[pyarrow_numpy]"
     res = ddf.compute()
-    assert res["string_pyarrow1"].dtype == "string[pyarrow]"
-    assert all(len(s) == 10 for s in res["string_pyarrow1"].tolist())
+    assert res["string_pyarrow_numpy1"].dtype == "string[pyarrow_numpy]"
+    assert all(len(s) == 10 for s in res["string_pyarrow_numpy1"].tolist())
 
 
 @pytest.mark.parametrize("seed", [None, 42])

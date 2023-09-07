@@ -906,7 +906,6 @@ def test_reductions_out(frame, axis, out, redfunc):
 
 
 @pytest.mark.parametrize("split_every", [False, 2])
-@pytest.mark.xfail_with_pyarrow_strings
 def test_allany(split_every):
     df = pd.DataFrame(
         np.random.choice([True, False], size=(100, 4)), columns=["A", "B", "C", "D"]
@@ -1342,6 +1341,7 @@ def test_reductions_frame_dtypes_numeric_only_supported(func):
             match="'DatetimeArray' with dtype datetime64.*|"
             "'DatetimeArray' does not implement reduction|could not convert|"
             "'ArrowStringArray' with dtype string"
+            "|'ArrowStringArrayNumpySemantics' with dtype string does"
             "|unsupported operand|no kernel",
         ):
             getattr(ddf, func)(numeric_only=False)
@@ -1362,6 +1362,7 @@ def test_reductions_frame_dtypes_numeric_only_supported(func):
                 match="'DatetimeArray' with dtype datetime64.*|"
                 "'DatetimeArray' does not implement reduction|could not convert|"
                 "'ArrowStringArray' with dtype string"
+                "|'ArrowStringArrayNumpySemantics' with dtype string does"
                 "|unsupported operand|no kernel",
             ):
                 getattr(ddf, func)()

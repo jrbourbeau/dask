@@ -4810,8 +4810,8 @@ def test_read_parquet_convert_string(tmp_path, convert_string, engine):
         ddf = dd.read_parquet(outfile, engine=engine)
 
     if convert_string:
-        expected = df.astype({"A": "string[pyarrow]"})
-        expected.index = expected.index.astype("string[pyarrow]")
+        expected = df.astype({"A": "string[pyarrow_numpy]"})
+        expected.index = expected.index.astype("string[pyarrow_numpy]")
     else:
         expected = df
     assert_eq(ddf, expected)
@@ -4861,12 +4861,12 @@ def test_read_parquet_convert_string_nullable_mapper(tmp_path, engine):
 
     expected = df.astype(
         {
-            "A": "string[pyarrow]",  # bc dataframe.convert-string=True
+            "A": "string[pyarrow_numpy]",  # bc dataframe.convert-string=True
             "B": pd.Int64Dtype(),  # bc use_nullable_dtypes=Pandas
             "C": pd.Float64Dtype(),  # bc user mapper
         }
     )
-    expected.index = expected.index.astype("string[pyarrow]")
+    expected.index = expected.index.astype("string[pyarrow_numpy]")
 
     assert_eq(ddf, expected)
 

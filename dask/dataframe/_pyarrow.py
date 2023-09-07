@@ -20,9 +20,9 @@ def is_pyarrow_string_dtype(dtype):
         return False
 
     if PANDAS_GE_150:
-        pa_string_types = [pd.StringDtype("pyarrow"), pd.ArrowDtype(pa.string())]
+        pa_string_types = [pd.StringDtype("pyarrow_numpy"), pd.ArrowDtype(pa.string())]
     else:
-        pa_string_types = [pd.StringDtype("pyarrow")]
+        pa_string_types = [pd.StringDtype("pyarrow_numpy")]
     return dtype in pa_string_types
 
 
@@ -66,8 +66,8 @@ def _to_string_dtype(df, dtype_check, index_check, string_dtype):
         return df
 
     # Guards against importing `pyarrow` at the module level (where it may not be installed)
-    if string_dtype == "pyarrow":
-        string_dtype = pd.StringDtype("pyarrow")
+    if string_dtype == "pyarrow_numpy":
+        string_dtype = pd.StringDtype("pyarrow_numpy")
 
     # Possibly convert DataFrame/Series/Index to `string[pyarrow]`
     dtypes = None
@@ -102,7 +102,7 @@ to_pyarrow_string = partial(
     _to_string_dtype,
     dtype_check=is_object_string_dtype,
     index_check=is_object_string_index,
-    string_dtype="pyarrow",
+    string_dtype="pyarrow_numpy",
 )
 to_object_string = partial(
     _to_string_dtype,

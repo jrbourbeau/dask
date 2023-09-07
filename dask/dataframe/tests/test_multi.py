@@ -1669,7 +1669,7 @@ def test_melt(kwargs):
     if pa:
         # If pyarrow is installed, test that `string[pyarrow]` dtypes
         # give the same result with `pandas` and `dask`
-        pdf = pdf.astype({"s1": "string[pyarrow]", "s2": "string[pyarrow]"})
+        pdf = pdf.astype({"s1": "string[pyarrow_numpy]", "s2": "string[pyarrow_numpy]"})
 
     ddf = dd.from_pandas(pdf, 4)
 

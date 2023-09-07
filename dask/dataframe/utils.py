@@ -826,7 +826,7 @@ def meta_series_constructor(like):
 
 def get_string_dtype():
     """Depending on config setting, we might convert objects to pyarrow strings"""
-    return pd.StringDtype("pyarrow") if pyarrow_strings_enabled() else object
+    return pd.StringDtype("pyarrow_numpy") if pyarrow_strings_enabled() else object
 
 
 def pyarrow_strings_enabled() -> bool:
