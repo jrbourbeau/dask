@@ -26,3 +26,7 @@ try:
     from dask.dataframe.io.orc import read_orc, to_orc
 except ImportError:
     pass
+
+from dask.dataframe._pyarrow import maybe_infer_strings
+
+maybe_infer_strings()

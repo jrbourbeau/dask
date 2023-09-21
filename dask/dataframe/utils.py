@@ -541,21 +541,21 @@ def _maybe_sort(a, check_index: bool):
     return a.sort_index() if check_index else a
 
 
-def _maybe_convert_string(a, b):
-    if pyarrow_strings_enabled():
-        from dask.dataframe._pyarrow import to_pyarrow_string
+# def _maybe_convert_string(a, b):
+#     if pyarrow_strings_enabled():
+#         from dask.dataframe._pyarrow import to_pyarrow_string
 
-        if isinstance(a, (pd.DataFrame, pd.Series, pd.Index)):
-            a = to_pyarrow_string(a)
+#         if isinstance(a, (pd.DataFrame, pd.Series, pd.Index)):
+#             a = to_pyarrow_string(a)
 
-        if isinstance(b, (pd.DataFrame, pd.Series, pd.Index)):
-            b = to_pyarrow_string(b)
+#         if isinstance(b, (pd.DataFrame, pd.Series, pd.Index)):
+#             b = to_pyarrow_string(b)
 
-    return a, b
+#     return a, b
 
 
 def assert_eq_dtypes(a, b):
-    a, b = _maybe_convert_string(a, b)
+    # a, b = _maybe_convert_string(a, b)
     tm.assert_series_equal(a.dtypes.value_counts(), b.dtypes.value_counts())
 
 
@@ -590,7 +590,7 @@ def assert_eq(
     if hasattr(b, "to_pandas"):
         b = b.to_pandas()
 
-    a, b = _maybe_convert_string(a, b)
+    # a, b = _maybe_convert_string(a, b)
 
     if isinstance(a, (pd.DataFrame, pd.Series)) and sort_results:
         a = _maybe_sort(a, check_index)

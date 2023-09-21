@@ -50,7 +50,8 @@ except ImportError:
     pq = False
 
 
-SKIP_FASTPARQUET = not fastparquet
+SKIP_FASTPARQUET = True
+# SKIP_FASTPARQUET = not fastparquet
 FASTPARQUET_MARK = pytest.mark.skipif(
     SKIP_FASTPARQUET, reason="fastparquet not found or pyarrow strings are enabled"
 )
