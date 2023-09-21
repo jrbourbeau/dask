@@ -129,15 +129,9 @@ def check_pyarrow_string_supported():
 def maybe_infer_strings():
     """Make sure we have all the required versions"""
     if not PANDAS_GE_211:
-        raise RuntimeError(
-            "Using dask's `dataframe.convert-string` configuration "
-            "option requires `pandas>=2.0` to be installed."
-        )
+        return
     if pa is None or Version(pa.__version__) < Version("12.0.0"):
-        raise RuntimeError(
-            "Using dask's `dataframe.convert-string` configuration "
-            "option requires `pyarrow>=12` to be installed."
-        )
+        return
 
     print("\n\n\nSetting future.infer_string = True\n\n\n")
     pd.set_option("future.infer_string", True)
