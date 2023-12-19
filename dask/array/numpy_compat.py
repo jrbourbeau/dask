@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import warnings
-
 import numpy as np
 from packaging.version import parse as parse_version
 
@@ -22,40 +20,8 @@ else:
     from numpy.core.numeric import normalize_axis_tuple  # type: ignore[attr-defined]
 
 
-# Taken from scikit-learn:
-# https://github.com/scikit-learn/scikit-learn/blob/master/sklearn/utils/fixes.py#L84
-try:
-    with warnings.catch_warnings():
-        if (
-            not np.allclose(
-                np.divide(0.4, 1, casting="unsafe"),
-                np.divide(0.4, 1, casting="unsafe", dtype=float),
-            )
-            or not np.allclose(np.divide(1, 0.5, dtype="i8"), 2)
-            or not np.allclose(np.divide(0.4, 1), 0.4)
-        ):
-            raise TypeError(
-                "Divide not working with dtype: "
-                "https://github.com/numpy/numpy/issues/3484"
-            )
-        divide = np.divide
-        ma_divide = np.ma.divide
-
-except TypeError:
-    # Divide with dtype doesn't work on Python 3
-    def divide(x1, x2, out=None, dtype=None):  # type: ignore
-        """Implementation of numpy.divide that works with dtype kwarg.
-
-        Temporary compatibility fix for a bug in numpy's version. See
-        https://github.com/numpy/numpy/issues/3484 for the relevant issue."""
-        x = np.divide(x1, x2, out)
-        if dtype is not None:
-            x = x.astype(dtype)
-        return x
-
-    ma_divide = np.ma.core._DomainedBinaryOperation(  # type: ignore
-        divide, np.ma.core._DomainSafeDivide(), 0, 1  # type: ignore
-    )
+divide = np.divide
+ma_divide = np.ma.divide
 
 
 class _Recurser:
